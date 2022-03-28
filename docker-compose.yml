@@ -1,0 +1,62 @@
+# Docker Compose file Reference (https://docs.docker.com/compose/compose-file/)
+version: '3'
+
+#Define services
+services:
+
+  #PostgreSQL Database for the application
+  gift-card-postgres:
+    image: "postgres:9.6-alpine"
+    container_name: gift-card-postgres
+    #Volume mounted for database for the storage
+    volumes:
+      - gift-card-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432 # Forward the exposed port 5432 on the container to port 5432 on the host machine
+
+    #Environment variable for DB name, user and password
+    environment:
+      - POSTGRES_DB=guusto
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+
+  #Back-end Spring Boot Application
+  gift-card-api:
+    #The docker file in scrum-app build the jar and provides the docker image with the following name.
+    build: ./gift-card-api
+    container_name: gift-card-api
+
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    #Environment variables for Spring Boot Application.
+    environment:
+      - DB_SERVER=gift-card-postgres
+      - POSTGRES_DB=guusto
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+    ports:
+      - 8080:8081 # Forward the exposed port 8080 on the container to port 8080 on the host machine
+    links:
+      - gift-card-postgres
+
+  #Back-end Spring Boot Application
+  balance-api:
+    #The docker file in scrum-app build the jar and provides the docker image with the following name.
+    build: ./balance-api
+    container_name: balance-api
+
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    #Environment variables for Spring Boot Application.
+    environment:
+      - DB_SERVER=gift-card-postgres
+      - POSTGRES_DB=guusto
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+    ports:
+      - 9091:9090 # Forward the exposed port 8080 on the container to port 8080 on the host machine
+    links:
+      - gift-card-postgres
+
+volumes:
+  gift-card-data:
