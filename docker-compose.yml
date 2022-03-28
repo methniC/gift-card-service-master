@@ -22,7 +22,7 @@ services:
 
   #Back-end Spring Boot Application
   gift-card-api:
-    #The docker file in scrum-app build the jar and provides the docker image with the following name.
+    #The docker image and container will be build with the names as mentioned below.
     build: ./gift-card-api
     container_name: gift-card-api
 
@@ -41,7 +41,7 @@ services:
 
   #Back-end Spring Boot Application
   balance-api:
-    #The docker file in scrum-app build the jar and provides the docker image with the following name.
+     #The docker image and container will be build with the names as mentioned below.
     build: ./balance-api
     container_name: balance-api
 
